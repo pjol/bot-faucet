@@ -138,12 +138,14 @@ func (s *BotService) Redeem(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("user redeemed"))
 		}
 
+		tx.Rollback()
 		fmt.Println(err)
 		return
 	}
 
 	err = s.bot.Send(amount, request.Address)
 	if err != nil {
+		tx.Rollback()
 		fmt.Println(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
